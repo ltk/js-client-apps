@@ -1,18 +1,18 @@
-define(['collections/articles'], function(Articles) {
+define(['collections/articles' ,'vendor/jquery/jquery.timeago'], function(Articles, Timeago) {
   return Backbone.View.extend({
     el: '.page',
+    template: _.template($('#articles').html()),
     render: function() {
       var view = this;
       var articles = new Articles;
       articles.fetch({
         success: function(articles) {
-          var articles_html = _.template($('#articles').html(), {articles: articles.models});
+          articles.sort();
+          var articles_html = view.template({articles: articles.models});
           view.$el.html(articles_html);
+          $('abbr.timeago').timeago();
         }
       });
-
-      console.log(articles);
-
       return this;
     }
   });

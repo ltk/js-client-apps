@@ -27,7 +27,7 @@ requirejs.config({
 });
 
 require(['backbone'], function() {
-  require(['routers/router.app', 'models/session', 'vendor/jquery/jquery.storage'], function(AppRouter, Session, LocalStorage) {
+  require(['routers/app', 'models/session', 'collections/messages', 'views/messages', 'vendor/jquery/jquery.storage'], function(AppRouter, Session, Messages, MessagesView, LocalStorage) {
     Dispatcher = _.extend({}, Backbone.Events);
 
     session_manager = {
@@ -48,7 +48,6 @@ require(['backbone'], function() {
             return true;
           }
         }
-
         return false;
       }
     };
@@ -56,8 +55,10 @@ require(['backbone'], function() {
     current_session = new Session(session_manager.persistedAttributes());
     current_session.on('change', session_manager.updateAttributes, session_manager);
 
-
     app_router = new AppRouter();
+
+    messages = new Messages();
+    var messagesView = new MessagesView();
 
     Backbone.history.start({
       pushState: false

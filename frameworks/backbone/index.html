@@ -3,27 +3,26 @@
   <head>
     <meta charset="utf-8">
     <title>Backbode News</title>
-    <link rel="stylesheet" href="/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/css/vendor/bootstrap.min.css" />
+    <link rel="stylesheet" href="/css/style.min.css" />
   </head>
   <body>
-    <div class="container">
-      <div class="navbar">
-        <div class="navbar-inner">
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
           <a class="brand" href="#">Backbode News</a>
-          <ul class="nav">
-            <li><a href="#">Home</a></li>
-            <li><a href="#articles">Articles</a></li>
-          </ul>
           <div class="account-nav"></div>
         </div>
       </div>
+    </div>
+    <div class="container">
       <div class="flash"></div>
       <div class="page"></div>
     </div>
 
     <script type="text/template" id="account">
+      <a href="#account/edit" class="btn btn-primary" title="Edit">Edit</a>
       <h2>Your Account</h2>
-      <a href="#account/edit" class="btn" title="edit your account">Edit</a>
       <p>Username: <%= account.get('username') %></p>
       <p>Email Address: <%= account.get('email') %></p>
       <p>Pointz: <%= account.get('points') %></p>
@@ -32,7 +31,7 @@
     <script type="text/template" id="edit-account">
       <h2>Edit Your Account</h2>
 
-      <form class="form-horizontal">
+      <form class="form-vertical">
         <div class="errors"></div>
         <div class="control-group">
           <label class="control-label" for="inputEmail">Username</label>
@@ -57,31 +56,25 @@
     <script type="text/template" id="account-nav-links">
       <% if(session_manager.loggedIn()) { %>
         <li><a href="#account">Your Account</a></li>
-        <li class="divider-vertical"></li>
         <li><a href="#logout">Logout</a></li>
       <% } else { %>
         <li><a href="#login">Login</a></li>
-        <li class="divider-vertical"></li>
         <li><a href="#signup">Sign Up</a></li>
       <% } %>
     </script>
 
-    <script type="text/template" id="home">
-      <h2>Da homepage</h2>
-    </script>
-
     <script type="text/template" id="articles">
       <% if(session_manager.loggedIn()) { %>
-        <a href="#articles/new" title="Add an Article" class="btn btn-success">Add an Article</a>
+        <a href="#articles/new" title="Add an Article" class="btn btn-primary">Submit an Article</a>
       <% } else { %>
         <a href="#login" title="login">Log in</a> to post an article.
       <% } %>
 
-      <h2>Dem Articles</h2>
+      <h2>Recent Articles</h2>
       <% if(articles.length > 0) { %>
         <ul class="articles">
           <% _.each(articles, function(article){ %>
-            <li><%= article.get('title') %> (<%= article.get('url') %>)</li>
+            <li><a href="<%= article.get('url') %>" title="<%= article.get('title') %>"><%= article.get('title') %></a> (<%= article.get('url') %>) - <abbr class="timeago" title="<%= article.get('created_at') %>"><%= article.get('created_at') %></abbr></li>
           <% }); %>
         </ul>
       <% } %>
@@ -90,7 +83,7 @@
     <script type="text/template" id="new-session-form">
       <h2>Login</h2>
 
-      <form class="form-horizontal">
+      <form class="form-vertical">
         <div class="errors"></div>
         <div class="control-group">
           <label class="control-label" for="inputEmail">Email</label>
@@ -115,7 +108,7 @@
     <script type="text/template" id="new-article-form">
       <h2>Submit an Article</h2>
 
-      <form class="form-horizontal">
+      <form class="form-vertical">
         <div class="errors"></div>
         <div class="control-group">
           <label class="control-label" for="inputTitle">Title</label>
@@ -140,7 +133,7 @@
     <script type="text/template" id="new-user-form">
       <h2>ohai!</h2>
 
-      <form class="form-horizontal">
+      <form class="form-vertical">
         <div class="errors"></div>
         <div class="control-group">
           <label class="control-label" for="inputEmail">Username</label>
@@ -174,11 +167,20 @@
       </form>
     </script>
 
+
+    <script type="text/template" id="messages">
+      <% if(messages.models.length > 0) { %>
+        <div class="alert">
+          <% _.each(messages.models, function(message){ %>
+            <%= message.get('text') %>
+          <% }); %>
+        </div>
+      <% } %>
+    </script>
+
     <script type="text/template" id="form-errors">
       <div class="alert alert-error">
         <% _.each(errors, function(error){ %>
-          <% console.log("error:"); %>
-          <% console.log(error); %>
           <%= error %></br>
         <% }); %>
       </div>

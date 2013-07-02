@@ -1,8 +1,8 @@
 define(['models/user', 'vendor/jquery/jquery.serializeObject'], function(User, SerializeObject) {
   return UserSignUpView = Backbone.View.extend({
     tagName: "div",
-
     className: "new-user",
+    template: _.template($('#new-user-form').html()),
 
     events: {
       "submit form": "createUser"
@@ -13,7 +13,7 @@ define(['models/user', 'vendor/jquery/jquery.serializeObject'], function(User, S
     },
 
     html: function() {
-      return _.template($('#new-user-form').html(), {});
+      return this.template();
     },
 
     render: function() {
@@ -43,20 +43,20 @@ define(['models/user', 'vendor/jquery/jquery.serializeObject'], function(User, S
 
       this.model.save(user_data, {
         success: function(user, response, options) {
-          console.log('- createUser success callback -');
-          Dispatcher.trigger('show_flash_message', 'You have been signed up.');
-          view.redirectToLogin();
+          view.redirectToLogin('You have been signed up.');
         },
         error: function(user, xhr, options) {
-          console.log('- createUser error callback -');
           var errors = $.parseJSON(xhr.responseText).errors;
           view.renderErrors(errors);
         }
       });
     }, 
 
-    redirectToLogin: function() {
+    redirectToLogin: function(message) {
       app_router.navigate('login', {trigger: true});
+      if(!_.isUndefined(message)) {
+        Dispatcher.trigger('add_message', message);
+      }
     }
   });
 });

@@ -18,8 +18,7 @@ define(['models/article', 'vendor/jquery/jquery.serializeObject'], function(Arti
 
     render: function() {
       if(!session_manager.loggedIn()) {
-        alert('gotta login first');
-        return this.redirectToLogin();
+        return this.redirectToLogin('Gotta login first yo.');
       }
 
       var view = this;
@@ -49,12 +48,9 @@ define(['models/article', 'vendor/jquery/jquery.serializeObject'], function(Arti
       this.model.save(article_data, {
         beforeSend: this.sendAuthentication,
         success: function(article, response, options) {
-          console.log('- createarticle success callback -');
-          Dispatcher.trigger('show_flash_message', 'Article submitted.');
-          view.redirectToArticles();
+          view.redirectToArticles('Article submitted.');
         },
         error: function(article, xhr, options) {
-          console.log('- createarticle error callback -');
           var errors = $.parseJSON(xhr.responseText).errors;
           view.renderErrors(errors);
         }
@@ -65,12 +61,18 @@ define(['models/article', 'vendor/jquery/jquery.serializeObject'], function(Arti
       xhr.setRequestHeader('X-User-Token', current_session.get('token'));
     },
 
-    redirectToLogin: function() {
+    redirectToLogin: function(message) {
       app_router.navigate('login', {trigger: true});
+      if(!_.isUndefined(message)) {
+        Dispatcher.trigger('add_message', message);
+      }
     },
 
-    redirectToArticles: function() {
+    redirectToArticles: function(message) {
       app_router.navigate('articles', {trigger: true});
+      if(!_.isUndefined(message)) {
+        Dispatcher.trigger('add_message', message);
+      }
     }
   });
 });

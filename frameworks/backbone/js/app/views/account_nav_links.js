@@ -1,14 +1,14 @@
 define([], function() {
   return Backbone.View.extend({
     tagName: "ul",
-
     className: "account-nav nav pull-right",
+    template: _.template($('#account-nav-links').html()),
 
     initialize: function() {
     },
 
     html: function() {
-      return _.template($('#account-nav-links').html(), {});
+      return this.template();
     },
 
     render: function() {

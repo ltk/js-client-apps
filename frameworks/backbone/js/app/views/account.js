@@ -1,15 +1,15 @@
 define(['models/account'], function(Account) {
   return Backbone.View.extend({
     tagName: "div",
-
     className: "account",
+    template: _.template($('#account').html()),
 
     initialize: function() {
       this.model = new Account();
     },
 
     html: function() {
-      return _.template($('#account').html(), {account: this.model});
+      return this.template({account: this.model});
     },
 
     render: function() {

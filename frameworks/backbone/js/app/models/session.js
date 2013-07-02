@@ -2,13 +2,6 @@ define(function() {
   return Backbone.Model.extend({
     urlRoot: "/session",
 
-    initialize: function() {
-      // attempt to get the stuff from localstorage
-      // console.log('session initialized');
-      // this.bind('save', this.persistSession);
-      // this.bind('destroy', this.unpersistSession);
-    },
-
     hasToken: function() {
       var token = this.get('token');
 
@@ -47,23 +40,6 @@ define(function() {
           }
         }
       }
-    },
-
-    // persistedSession: function() {
-    //   $.localStorage(this.persistenceKey);
-    // },
-
-    // persistSession: function(event) {
-    //   console.log('in persistSession');
-    //   console.log(event);
-    //   var token = "blah";
-    //   $.localStorage(this.persistenceKey, token);
-    // }, 
-
-    // unpersistSession: function() {
-    //   $.localStorage(this.persistenceKey, null);
-    // },
-
-    // persistenceKey: 'backbode/session/token'
+    }
   });
 });

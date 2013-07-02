@@ -1,8 +1,8 @@
 define(['models/session', 'vendor/jquery/jquery.serializeObject'], function(Session, SerializeObject) {
   return Backbone.View.extend({
     tagName: "div",
-
     className: "new-session",
+    template: _.template($('#new-session-form').html()),
 
     events: {
       "submit form": "createSession"
@@ -10,20 +10,15 @@ define(['models/session', 'vendor/jquery/jquery.serializeObject'], function(Sess
 
     initialize: function() {
       this.model = current_session;
-
-      // if(this.model.hasToken) {
-      //   return this.redirectToHome();
-      // }
     },
 
     html: function() {
-      return _.template($('#new-session-form').html(), {});
+      return this.template();
     },
 
     render: function() {
       if(this.model.get('token')) {
-        Dispatcher.trigger('show_flash_message', 'You are already logged in.');
-        return this.redirectToHome();
+        return this.redirectToHome('You are already logged in.');
       }
 
       var view = this;
@@ -52,13 +47,10 @@ define(['models/session', 'vendor/jquery/jquery.serializeObject'], function(Sess
       this.model.clear();
       this.model.save(login_data, {
         success: function(session, response, options) {
-          console.log('- createSession success callback -');
           session.set({token: response.token, password: null});
-          Dispatcher.trigger('show_flash_message', 'You have been logged in.');
-          view.redirectToHome();
+          view.redirectToHome('You have been logged in.');
         },
         error: function(session, xhr, options) {
-          console.log('- createSession error callback -');
           session.set({password: null});
           var errors = $.parseJSON(xhr.responseText).errors;
           view.renderErrors(errors);
@@ -66,8 +58,11 @@ define(['models/session', 'vendor/jquery/jquery.serializeObject'], function(Sess
       });
     }, 
 
-    redirectToHome: function() {
-      return app_router.navigate('', {trigger: true});
+    redirectToHome: function(message) {
+      app_router.navigate('', {trigger: true});
+      if(!_.isUndefined(message)) {
+        Dispatcher.trigger('add_message', message);
+      }
     }
   });
 });

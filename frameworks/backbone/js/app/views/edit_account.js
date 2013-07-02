@@ -1,8 +1,8 @@
 define(['models/account', 'vendor/jquery/jquery.serializeObject'], function(Account, SerializeObject) {
   return Backbone.View.extend({
     tagName: "div",
-
     className: "edit-account",
+    template: _.template($('#edit-account').html()),
 
     events: {
       "submit form": "updateAccount"
@@ -13,7 +13,7 @@ define(['models/account', 'vendor/jquery/jquery.serializeObject'], function(Acco
     },
 
     html: function() {
-      return _.template($('#edit-account').html(), {account: this.model});
+      return this.template({account: this.model});
     },
 
     render: function() {
